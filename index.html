@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LOGOS — 自己哲学構築システム</title>
+<style>
+  :root {
+    --bg-deep: #070d19;
+    --bg-main: #0c1629;
+    --bg-card: #13223d;
+    --bg-elevated: #192c4f;
+    --border: #243b66;
+    --border-focus: #c9a45c;
+    --text-primary: #eef2f8;
+    --text-secondary: #9fb0cc;
+    --text-muted: #65799b;
+    --accent-gold: #d4af63;
+    --accent-gold-dim: rgba(212, 175, 99, 0.15);
+    --accent-blue: #3b82f6;
+    --danger: #e05a5a;
+    --success: #48b883;
+    --radius: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    line-height: 1.65;
+    min-height: 100vh;
+    padding-bottom: 84px;
+  }
+
+  header {
+    background: linear-gradient(180deg, #050912 0%, var(--bg-main) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .brand h1 {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.16em;
+    color: var(--accent-gold);
+    font-weight: 700;
+  }
+
+  .brand span {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+  }
+
+  .version-badge {
+    font-size: 0.72rem;
+    background: var(--accent-gold-dim);
+    color: var(--accent-gold);
+    border: 1px solid rgba(212, 175, 99, 0.35);
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 18px 16px;
+  }
+
+  .view-section {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .view-section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-intro {
+    margin-bottom: 16px;
+  }
+
+  .section-intro h2 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-intro p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .card-gold {
+    border-color: rgba(212, 175, 99, 0.45);
+    background: linear-gradient(145deg, #152644 0%, #0f1c33 100%);
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    padding: 11px 13px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--border-focus);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 84px;
+    line-height: 1.6;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: var(--accent-gold);
+    color: #08101e;
+    width: 100%;
+  }
+
+  .btn-primary:hover {
+    background: #e0be75;
+  }
+
+  .btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent-gold);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-ghost:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .btn-danger {
+    background: rgba(224, 90, 90, 0.12);
+    color: var(--danger);
+    border-color: rgba(224, 90, 90, 0.3);
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+
+  .btn-sm {
+    padding: 6px 11px;
+    font-size: 0.78rem;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .category-pills {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    scrollbar-width: none;
+  }
+  .category-pills::-webkit-scrollbar { display: none; }
+
+  .pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .pill.active {
+    background: var(--accent-gold-dim);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    font-weight: 600;
+  }
+
+  .entry-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 15px 15px 15px 46px;
+    margin-bottom: 12px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+
+  .entry-item.selected {
+    border-color: var(--accent-gold);
+    background: linear-gradient(145deg, #152644 0%, #13223d 100%);
+  }
+
+  .entry-select-box {
+    position: absolute;
+    top: 18px;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--accent-gold);
+    cursor: pointer;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .tag-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .tag-custom { background: rgba(212, 175, 99, 0.18); color: var(--accent-gold); border: 1px solid rgba(212, 175, 99, 0.35); }
+
+  /* トーンバッジ */
+  .tag-tone-positive { background: rgba(72, 184, 131, 0.18); color: #5eead4; border: 1px solid rgba(72, 184, 131, 0.35); }
+  .tag-tone-negative { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.35); }
+  .tag-tone-neutral { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.35); }
+
+  .entry-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .entry-body {
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+  }
+
+  .entry-reflection {
+    background: var(--bg-deep);
+    border-left: 2px solid var(--accent-blue);
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+  }
+
+  .entry-reflection-label {
+    font-size: 0.7rem;
+    color: #7cb0ff;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .entry-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid rgba(36, 59, 102, 0.6);
+    padding-top: 8px;
+  }
+
+  .multi-action-bar {
+    position: sticky;
+    top: 70px;
+    z-index: 40;
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .multi-action-bar.show {
+    display: flex;
+  }
+
+  .creed-block {
+    margin-bottom: 18px;
+  }
+
+  .creed-title {
+    font-size: 0.88rem;
+    color: var(--accent-gold);
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .creed-list {
+    list-style: none;
+  }
+
+  .creed-item {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px 12px 42px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .creed-select-box {
+    position: absolute;
+    top: 15px;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-gold);
+    cursor: pointer;
+  }
+
+  .creed-item-content {
+    flex: 1;
+  }
+
+  .creed-item-main {
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .creed-item-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    white-space: pre-wrap;
+  }
+
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 15, 0.82);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+
+  .modal-header h3 {
+    font-size: 1rem;
+    color: var(--accent-gold);
+  }
+
+  nav.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(7, 13, 25, 0.95);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    z-index: 60;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.68rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+    transition: color 0.2s;
+    font-family: inherit;
+  }
+
+  .nav-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+  }
+
+  .nav-btn.active {
+    color: var(--accent-gold);
+    font-weight: 600;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 82px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-elevated);
+    color: var(--accent-gold);
+    border: 1px solid var(--accent-gold);
+    padding: 9px 18px;
+    border-radius: 24px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s;
+    z-index: 200;
+    white-space: nowrap;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+
+  .search-container {
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .category-manage-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>LOGOS</h1>
+      <span>自己哲学構築システム</span>
+    </div>
+    <div class="version-badge" id="headerVerBadge">Rev. 1</div>
+  </div>
+</header>
+
+<main>
+  <!-- TAB 1: 記録する -->
+  <section id="view-create" class="view-section active">
+    <div class="section-intro" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2>ストックを記録する</h2>
+        <p>日々の気づき、現実の壁、他者の言葉や違和感をすばやく採集します。</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openCategoryManageModal()">⚙️ 分類管理</button>
+    </div>
+
+    <div class="card card-gold">
+      <div class="form-group">
+        <label for="insightType">分類</label>
+        <select id="insightType">
+          <!-- 動的生成 -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="insightTone">トーン（区分）</label>
+        <select id="insightTone">
+          <option value="positive">肯定的（ポジティブ・推進力・前進）</option>
+          <option value="negative">否定的（ネガティブ・挫折・警戒・課題）</option>
+          <option value="neutral">中立的（ファクト・客観的分析・ニュートラル）</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="insightSource">出典・きっかけ（人物名、書籍、現実の出来事など）</label>
+        <input type="text" id="insightSource" placeholder="例：先日の商談での失敗 / マルクス・アウレリウス『自省録』">
+      </div>
+
+      <div class="form-group">
+        <label for="insightContent">言葉・ファクト（何が起きたか / どんな言葉か）</label>
+        <textarea id="insightContent" style="min-height: 84px;" placeholder="例：準備不足と慢心が原因で、競合に完全に競り負けた。実力不足を痛感した。"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="insightMyTake">自分の解釈・どう活かすか（哲学の種）</label>
+        <textarea id="insightMyTake" style="min-height: 84px;" placeholder="例：どれだけ自信があっても、直前のリスク検証と準備の手を抜かない。現実の失敗こそ最大の教師とする。"></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveInsight()">ストックに保存する</button>
+    </div>
+  </section>
+
+  <!-- TAB 2: ストック検索・一覧 ＆ 複数選択合体 -->
+  <section id="view-search" class="view-section">
+    <div class="section-intro" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2>ストック検索・一覧</h2>
+        <p>カードの左側にチェックを入れると、複数を合体して自己哲学を作れます。</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openCategoryManageModal()">⚙️ 分類管理</button>
+    </div>
+
+    <div class="multi-action-bar" id="multiActionBar">
+      <span style="font-size:0.84rem; color:var(--text-primary); font-weight:600;" id="selectedCountText">0件選択中</span>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" onclick="clearSelection()">選択解除</button>
+        <button class="btn btn-primary btn-sm" style="width:auto;" onclick="openCombineModal()">選択項目を合体して自己哲学へ ↗</button>
+      </div>
+    </div>
+
+    <div class="category-pills" id="filterPills">
+      <!-- 動的生成 -->
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="キーワード（出典、言葉、解釈）で検索..." oninput="renderBrowse()">
+    </div>
+
+    <div id="browseList"></div>
+  </section>
+
+  <!-- TAB 3: 自己哲学 / 哲学の結晶 -->
+  <section id="view-creed" class="view-section">
+    <div class="section-intro">
+      <h2>自己哲学（思考の結晶）</h2>
+      <p>ストックから抽出・統合した、あなたの人生の判断基準・行動原理です。</p>
+    </div>
+
+    <div class="card card-gold">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <span style="font-size:0.8rem; color:var(--text-secondary);">最終更新: <strong id="creedUpdatedAt" style="color:var(--text-primary);">未設定</strong></span>
+        <div class="btn-row">
+          <button class="btn btn-secondary btn-sm" onclick="snapshotCreed()">📜 履歴保存</button>
+          <button class="btn btn-secondary btn-sm" onclick="openCombineCreedsModal()" style="border-color:var(--accent-gold); color:var(--accent-gold);">＋ 哲学同士を合体</button>
+          <button class="btn btn-primary btn-sm" onclick="openCreedModal()" style="width:auto;">＋ 条文追加</button>
+        </div>
+      </div>
+
+      <div class="creed-block">
+        <div class="creed-title">Ⅰ. 指針</div>
+        <ul class="creed-list" id="creed-mission"></ul>
+      </div>
+
+      <div class="creed-block">
+        <div class="creed-title">Ⅱ. 絶対価値</div>
+        <ul class="creed-list" id="creed-values"></ul>
+      </div>
+
+      <div class="creed-block" style="margin-bottom:0;">
+        <div class="creed-title">Ⅲ. 行動原則</div>
+        <ul class="creed-list" id="creed-principles"></ul>
+      </div>
+    </div>
+
+    <div class="section-intro" style="margin-top: 24px;">
+      <h2>改訂履歴（思考の変遷）</h2>
+    </div>
+    <div id="creedHistoryList"></div>
+  </section>
+
+  <!-- TAB 4: 設定・バックアップ -->
+  <section id="view-settings" class="view-section">
+    <div class="section-intro">
+      <h2>データ管理・バックアップ</h2>
+      <p>データはブラウザ内（ローカル）に保存されています。</p>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:0.95rem; margin-bottom:10px; color:var(--accent-gold);">バックアップ（JSON書き出し）</h3>
+      <button class="btn btn-secondary" style="width:100%;" onclick="exportData()">JSONファイルをダウンロード</button>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:0.95rem; margin-bottom:10px; color:var(--accent-gold);">データの復元（JSON読み込み）</h3>
+      <input type="file" id="importFile" accept=".json" style="margin-bottom:12px; font-size:0.82rem;">
+      <button class="btn btn-secondary" style="width:100%;" onclick="importData()">選択したファイルから復元</button>
+    </div>
+  </section>
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('create', this)">
+    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span>記録する</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('search', this)">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>ストック検索</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('creed', this)">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>自己哲学</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('settings', this)">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <span>管理</span>
+  </button>
+</nav>
+
+<!-- Modal: ストック編集用 -->
+<div class="modal-backdrop" id="editInsightModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>ストックを編集する</h3>
+      <button class="btn btn-ghost" onclick="closeModal('editInsightModal')">✕</button>
+    </div>
+    <input type="hidden" id="editInsightId">
+    <div class="form-group">
+      <label for="editInsightType">分類</label>
+      <select id="editInsightType">
+        <!-- 動的生成 -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="editInsightTone">トーン（区分）</label>
+      <select id="editInsightTone">
+        <option value="positive">肯定的</option>
+        <option value="negative">否定的</option>
+        <option value="neutral">中立的</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="editInsightSource">出典・きっかけ</label>
+      <input type="text" id="editInsightSource">
+    </div>
+    <div class="form-group">
+      <label for="editInsightContent">言葉・ファクト</label>
+      <textarea id="editInsightContent" style="min-height:74px;"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="editInsightMyTake">自分の解釈・どう活かすか</label>
+      <textarea id="editInsightMyTake" style="min-height:74px;"></textarea>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal('editInsightModal')">キャンセル</button>
+      <button class="btn btn-primary" style="width:auto;" onclick="updateInsightItem()">更新する</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 分類管理用 -->
+<div class="modal-backdrop" id="categoryManageModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>ストック分類の管理</h3>
+      <button class="btn btn-ghost" onclick="closeModal('categoryManageModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label for="newCategoryName">新しい分類を追加</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="newCategoryName" placeholder="例：ひらめき / 仮説">
+        <button class="btn btn-primary" style="width:auto; white-space:nowrap;" onclick="addCategory()">追加</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:16px;">
+      <label>登録済みの分類一覧</label>
+      <div id="categoryManageList" style="max-height:220px; overflow-y:auto; margin-top:6px;"></div>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end; margin-top:16px;">
+      <button class="btn btn-secondary" onclick="closeModal('categoryManageModal')">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 複数ストックの合体用 -->
+<div class="modal-backdrop" id="combineModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>複数ストックを合体して自己哲学に昇華</h3>
+      <button class="btn btn-ghost" onclick="closeModal('combineModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label for="combineSectionSelect">登録先カテゴリー</label>
+      <select id="combineSectionSelect">
+        <option value="principles">Ⅲ. 行動原則</option>
+        <option value="values">Ⅱ. 絶対価値</option>
+        <option value="mission">Ⅰ. 指針</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="combineMainText">統合した新しい指針・原則</label>
+      <input type="text" id="combineMainText" placeholder="例：速く動くために、定期的に深く立ち止まる">
+    </div>
+    <div class="form-group">
+      <label for="combineSubText">元になったストックの背景・統合の意図</label>
+      <textarea id="combineSubText" style="min-height:100px;"></textarea>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal('combineModal')">キャンセル</button>
+      <button class="btn btn-primary" style="width:auto;" onclick="saveCombinedCreed()">自己哲学に刻む</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 既存の自己哲学同士を合体する用 -->
+<div class="modal-backdrop" id="combineCreedsModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>既存の自己哲学同士を組み合わせて昇華</h3>
+      <button class="btn btn-ghost" onclick="closeModal('combineCreedsModal')">✕</button>
+    </div>
+    <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:12px;">
+      自己哲学タブのリストでチェックを入れた複数の哲学をここに統合します。
+    </p>
+    <div class="form-group">
+      <label for="combineCreedsSectionSelect">登録先カテゴリー</label>
+      <select id="combineCreedsSectionSelect">
+        <option value="principles">Ⅲ. 行動原則</option>
+        <option value="values">Ⅱ. 絶対価値</option>
+        <option value="mission">Ⅰ. 指針</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="combineCreedsMainText">統合した新しい自己哲学（メイン）</label>
+      <input type="text" id="combineCreedsMainText" placeholder="例：謙虚に学びながら、ロジカルに決断する">
+    </div>
+    <div class="form-group">
+      <label for="combineCreedsSubText">統合の背景・理由</label>
+      <textarea id="combineCreedsSubText" style="min-height:80px;"></textarea>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal('combineCreedsModal')">キャンセル</button>
+      <button class="btn btn-primary" style="width:auto;" onclick="saveCombinedCreedsResult()">統合して新哲学を刻む</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 単体自己哲学追加・編集用 -->
+<div class="modal-backdrop" id="creedModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="creedModalTitle">自己哲学に条文を刻む</h3>
+      <button class="btn btn-ghost" onclick="closeModal('creedModal')">✕</button>
+    </div>
+    <input type="hidden" id="editCreedId">
+    <div class="form-group">
+      <label for="creedSectionSelect">カテゴリー</label>
+      <select id="creedSectionSelect">
+        <option value="mission">Ⅰ. 指針</option>
+        <option value="values">Ⅱ. 絶対価値</option>
+        <option value="principles">Ⅲ. 行動原則</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="creedMainText">指針・原則</label>
+      <input type="text" id="creedMainText" placeholder="例：迷ったら困難な道を選ぶ">
+    </div>
+    <div class="form-group">
+      <label for="creedSubText">背景・理由</label>
+      <textarea id="creedSubText" placeholder="理由や背景"></textarea>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal('creedModal')">キャンセル</button>
+      <button class="btn btn-primary" style="width:auto;" onclick="saveCreedItem()">自己哲学に刻む</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">保存しました</div>
+
+<script>
+  const STORAGE_KEY = 'logos_philosophy_master_key';
+
+  let appData = {
+    version: 1,
+    updatedAt: null,
+    categories: [
+      { id: 'insight', name: '日々の気づき' },
+      { id: 'reality', name: '否定（現実）' },
+      { id: 'quote', name: '他者の哲学' },
+      { id: 'anti', name: '反面教師' }
+    ],
+    insights: [
+      {
+        id: 'i_sample',
+        type: 'quote',
+        tone: 'positive',
+        source: 'マルクス・アウレリウス『自省録』',
+        content: '障害は行動を妨げるかもしれないが、意志や心構えを妨げることはできない。',
+        myTake: '結果（コントロール外）に一喜一憂せず、自分の姿勢や準備（コントロール内）に100%集中する。',
+        date: '2026/11/17 10:00'
+      }
+    ],
+    creed: [
+      { id: 'c1', section: 'mission', main: '日々の経験から学び続け、自分の言葉と行動で周囲に良い影響を与える人間である', sub: 'サンプル条文' },
+      { id: 'c2', section: 'values', main: '誠実さと主体性：コントロールできる領域に集中する', sub: '他者や環境のせいにしない' },
+      { id: 'c3', section: 'principles', main: '迷ったら「長期的に見て誇れる選択か？」で決める', sub: '未来の自分が納得できる道を選ぶ' }
+    ],
+    creedHistory: []
+  };
+
+  let currentFilter = 'all';
+  let selectedInsightIds = new Set();
+  let selectedCreedIds = new Set();
+
+  function init() {
+    let saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        appData = { ...appData, ...parsed };
+      } catch (e) {
+        console.error('Data load error:', e);
+      }
+    } else {
+      const oldKeys = ['logos_philosophy_stock_v5', 'logos_philosophy_stock_v4', 'logos_philosophy_stock_v3', 'logos_philosophy_stock_v1', 'logos_philosophy_os_v1'];
+      for (const oldKey of oldKeys) {
+        const oldData = localStorage.getItem(oldKey);
+        if (oldData) {
+          try {
+            const parsedOld = JSON.parse(oldData);
+            if (parsedOld.insights || parsedOld.creed) {
+              appData = { ...appData, ...parsedOld };
+              persist();
+              break;
+            }
+          } catch (err) {
+            console.error('Migration error:', err);
+          }
+        }
+      }
+    }
+
+    // categoriesが存在しない古いデータのフォールバック
+    if (!appData.categories) {
+      appData.categories = [
+        { id: 'insight', name: '日々の気づき' },
+        { id: 'reality', name: '否定（現実）' },
+        { id: 'quote', name: '他者の哲学' },
+        { id: 'anti', name: '反面教師' }
+      ];
+    }
+
+    appData.insights.forEach(i => {
+      if (!i.tone) i.tone = 'neutral';
+    });
+
+    renderAll();
+  }
+
+  function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  }
+
+  function getJSTNow() {
+    const now = new Date();
+    const jst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    const y = jst.getFullYear();
+    const m = String(jst.getMonth() + 1).padStart(2, '0');
+    const d = String(jst.getDate()).padStart(2, '0');
+    const hh = String(jst.getHours()).padStart(2, '0');
+    const mm = String(jst.getMinutes()).padStart(2, '0');
+    return `${y}/${m}/${d} ${hh}:${mm}`;
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  function switchTab(tabName, btnEl) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-' + tabName).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    btnEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (tabName === 'search') {
+      renderBrowse();
+    }
+  }
+
+  // --- 分類（カテゴリ）管理関連 ---
+  function openCategoryManageModal() {
+    renderCategoryManageList();
+    document.getElementById('newCategoryName').value = '';
+    document.getElementById('categoryManageModal').classList.add('open');
+  }
+
+  function renderCategoryManageList() {
+    const listEl = document.getElementById('categoryManageList');
+    listEl.innerHTML = appData.categories.map(cat => `
+      <div class="category-manage-item">
+        <span>${escapeHTML(cat.name)} <code style="font-size:0.72rem; color:var(--text-muted);">(ID: ${cat.id})</code></span>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="editCategoryName('${cat.id}')">編集</button>
+          ${appData.categories.length > 1 ? `<button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat.id}')">削除</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addCategory() {
+    const nameInput = document.getElementById('newCategoryName');
+    const name = nameInput.value.trim();
+    if (!name) {
+      showToast('分類名を入力してください');
+      return;
+    }
+    const id = 'cat_' + Date.now();
+    appData.categories.push({ id, name });
+    persist();
+    nameInput.value = '';
+    renderCategoryManageList();
+    renderAll();
+    showToast('分類を追加しました');
+  }
+
+  function editCategoryName(id) {
+    const cat = appData.categories.find(c => c.id === id);
+    if (!cat) return;
+    const newName = prompt('分類名の変更', cat.name);
+    if (newName !== null && newName.trim() !== '') {
+      cat.name = newName.trim();
+      persist();
+      renderCategoryManageList();
+      renderAll();
+      showToast('分類名を変更しました');
+    }
+  }
+
+  function deleteCategory(id) {
+    if (appData.categories.length <= 1) {
+      alert('分類は最低1つ必要です。');
+      return;
+    }
+    if (!confirm('この分類を削除しますか？（この分類を使っているストックの分類は別のものに変更してください）')) return;
+    
+    appData.categories = appData.categories.filter(c => c.id !== id);
+    persist();
+    renderCategoryManageList();
+    renderAll();
+    showToast('分類を削除しました');
+  }
+
+  function populateCategorySelects() {
+    const selects = [document.getElementById('insightType'), document.getElementById('editInsightType')];
+    selects.forEach(sel => {
+      if (!sel) return;
+      const currentVal = sel.value;
+      sel.innerHTML = appData.categories.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
+      if (appData.categories.some(c => c.id === currentVal)) {
+        sel.value = currentVal;
+      }
+    });
+  }
+
+  function setupFilterPills() {
+    const pillsContainer = document.getElementById('filterPills');
+    
+    let html = `<button class="pill ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">すべて (<span id="count-all">${appData.insights.length}</span>)</button>`;
+    
+    // トーン別フィルター
+    html += `<button class="pill ${currentFilter === 'tone_positive' ? 'active' : ''}" data-filter="tone_positive">✅ 肯定的 (<span id="count-positive">${appData.insights.filter(i => i.tone === 'positive').length}</span>)</button>`;
+    html += `<button class="pill ${currentFilter === 'tone_negative' ? 'active' : ''}" data-filter="tone_negative">⚠️ 否定的 (<span id="count-negative">${appData.insights.filter(i => i.tone === 'negative').length}</span>)</button>`;
+    html += `<button class="pill ${currentFilter === 'tone_neutral' ? 'active' : ''}" data-filter="tone_neutral">⚖️ 中立的 (<span id="count-neutral">${appData.insights.filter(i => i.tone === 'neutral').length}</span>)</button>`;
+
+    // カスタム分類別フィルター
+    appData.categories.forEach(cat => {
+      const count = appData.insights.filter(i => i.type === cat.id).length;
+      html += `<button class="pill ${currentFilter === 'type_' + cat.id ? 'active' : ''}" data-filter="type_${cat.id}">${escapeHTML(cat.name)} (<span id="count-${cat.id}">${count}</span>)</button>`;
+    });
+
+    pillsContainer.innerHTML = html;
+
+    document.querySelectorAll('#filterPills .pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#filterPills .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFilter = pill.dataset.filter;
+        renderBrowse();
+      });
+    });
+  }
+
+  function saveInsight() {
+    const type = document.getElementById('insightType').value;
+    const tone = document.getElementById('insightTone').value;
+    const source = document.getElementById('insightSource').value.trim();
+    const content = document.getElementById('insightContent').value.trim();
+    const myTake = document.getElementById('insightMyTake').value.trim();
+
+    if (!content) {
+      showToast('言葉や気づきの内容を入力してください');
+      return;
+    }
+
+    appData.insights.unshift({
+      id: 'i_' + Date.now(),
+      type,
+      tone,
+      source: source || '日常の記録',
+      content,
+      myTake,
+      date: getJSTNow()
+    });
+
+    document.getElementById('insightSource').value = '';
+    document.getElementById('insightContent').value = '';
+    document.getElementById('insightMyTake').value = '';
+    persist();
+    showToast('ストックに保存しました！');
+
+    const searchBtn = document.querySelectorAll('.nav-btn')[1];
+    switchTab('search', searchBtn);
+  }
+
+  function openEditInsightModal(id) {
+    const item = appData.insights.find(i => i.id === id);
+    if (!item) return;
+    populateCategorySelects();
+    document.getElementById('editInsightId').value = item.id;
+    document.getElementById('editInsightType').value = item.type;
+    document.getElementById('editInsightTone').value = item.tone || 'neutral';
+    document.getElementById('editInsightSource').value = item.source;
+    document.getElementById('editInsightContent').value = item.content;
+    document.getElementById('editInsightMyTake').value = item.myTake || '';
+    document.getElementById('editInsightModal').classList.add('open');
+  }
+
+  function updateInsightItem() {
+    const id = document.getElementById('editInsightId').value;
+    const type = document.getElementById('editInsightType').value;
+    const tone = document.getElementById('editInsightTone').value;
+    const source = document.getElementById('editInsightSource').value.trim();
+    const content = document.getElementById('editInsightContent').value.trim();
+    const myTake = document.getElementById('editInsightMyTake').value.trim();
+
+    if (!content) {
+      showToast('内容を入力してください');
+      return;
+    }
+
+    const idx = appData.insights.findIndex(i => i.id === id);
+    if (idx !== -1) {
+      appData.insights[idx] = {
+        ...appData.insights[idx],
+        type,
+        tone,
+        source: source || '日常の記録',
+        content,
+        myTake
+      };
+      persist();
+      renderBrowse();
+      closeModal('editInsightModal');
+      showToast('ストックを更新しました');
+    }
+  }
+
+  function promoteInsightToCreed(id) {
+    const item = appData.insights.find(i => i.id === id);
+    if (!item) return;
+    openCreedModal(null, item.myTake || item.content, `【出典】${item.source}\n【引用】${item.content}` + (item.myTake ? `\n【解釈】${item.myTake}` : ''));
+  }
+
+  function toggleSelectInsight(id, checkboxEl, event) {
+    if (event) event.stopPropagation();
+    if (checkboxEl.checked) {
+      selectedInsightIds.add(id);
+      checkboxEl.closest('.entry-item').classList.add('selected');
+    } else {
+      selectedInsightIds.delete(id);
+      checkboxEl.closest('.entry-item').classList.remove('selected');
+    }
+    updateMultiActionBar();
+  }
+
+  function handleCardClick(id, event) {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON' || event.target.closest('button')) return;
+    const checkbox = document.getElementById('chk_' + id);
+    if (checkbox) {
+      checkbox.checked = !checkbox.checked;
+      toggleSelectInsight(id, checkbox);
+    }
+  }
+
+  function clearSelection() {
+    selectedInsightIds.clear();
+    document.querySelectorAll('.entry-select-box').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.entry-item').forEach(el => el.classList.remove('selected'));
+    updateMultiActionBar();
+  }
+
+  function updateMultiActionBar() {
+    const bar = document.getElementById('multiActionBar');
+    const count = selectedInsightIds.size;
+    if (count > 0) {
+      bar.classList.add('show');
+      document.getElementById('selectedCountText').textContent = `${count}件選択中`;
+    } else {
+      bar.classList.remove('show');
+    }
+  }
+
+  function openCombineModal() {
+    if (selectedInsightIds.size === 0) return;
+    const items = appData.insights.filter(i => selectedInsightIds.has(i.id));
+    
+    let combinedSub = items.map((it, idx) => `【要素${idx+1}: ${it.source}】\n・事実: ${it.content}\n・解釈: ${it.myTake || 'なし'}`).join('\n\n');
+    let defaultMain = items[0].myTake ? items[0].myTake : items[0].content;
+
+    document.getElementById('combineMainText').value = defaultMain;
+    document.getElementById('combineSubText').value = `【複数ストックの統合】\n\n` + combinedSub;
+    document.getElementById('combineModal').classList.add('open');
+  }
+
+  function saveCombinedCreed() {
+    const section = document.getElementById('combineSectionSelect').value;
+    const main = document.getElementById('combineMainText').value.trim();
+    const sub = document.getElementById('combineSubText').value.trim();
+
+    if (!main) {
+      showToast('指針・原則を入力してください');
+      return;
+    }
+
+    appData.creed.push({
+      id: 'c_' + Date.now(),
+      section,
+      main,
+      sub
+    });
+
+    appData.updatedAt = getJSTNow();
+    persist();
+    renderCreed();
+    closeModal('combineModal');
+    clearSelection();
+    showToast('合体した自己哲学を刻みました！');
+
+    const creedTabBtn = document.querySelectorAll('.nav-btn')[2];
+    switchTab('creed', creedTabBtn);
+  }
+
+  function toggleSelectCreed(id, checkboxEl) {
+    if (checkboxEl.checked) {
+      selectedCreedIds.add(id);
+    } else {
+      selectedCreedIds.delete(id);
+    }
+  }
+
+  function openCombineCreedsModal() {
+    if (selectedCreedIds.size < 2) {
+      showToast('合体させたい自己哲学に2つ以上チェックを入れてください');
+      return;
+    }
+    const items = appData.creed.filter(c => selectedCreedIds.has(c.id));
+    let combinedSub = items.map((it, idx) => `【元哲学${idx+1}】\n・内容: ${it.main}\n・背景: ${it.sub || 'なし'}`).join('\n\n');
+    let defaultMain = items.map(it => it.main).join(' ＋ ');
+
+    document.getElementById('combineCreedsMainText').value = defaultMain.length > 50 ? items[0].main : defaultMain;
+    document.getElementById('combineCreedsSubText').value = `【自己哲学の統合】\n\n` + combinedSub;
+    document.getElementById('combineCreedsModal').classList.add('open');
+  }
+
+  function saveCombinedCreedsResult() {
+    const section = document.getElementById('combineCreedsSectionSelect').value;
+    const main = document.getElementById('combineCreedsMainText').value.trim();
+    const sub = document.getElementById('combineCreedsSubText').value.trim();
+
+    if (!main) {
+      showToast('統合した自己哲学を入力してください');
+      return;
+    }
+
+    appData.creed.push({
+      id: 'c_' + Date.now(),
+      section,
+      main,
+      sub
+    });
+
+    appData.updatedAt = getJSTNow();
+    persist();
+    renderCreed();
+    closeModal('combineCreedsModal');
+    selectedCreedIds.clear();
+    showToast('既存の哲学を統合して新哲学を刻みました！');
+  }
+
+  function deleteInsight(id) {
+    if (!confirm('このストックを削除しますか？')) return;
+    selectedInsightIds.delete(id);
+    appData.insights = appData.insights.filter(i => i.id !== id);
+    persist();
+    renderBrowse();
+    updateMultiActionBar();
+    showToast('削除しました');
+  }
+
+  function openCreedModal(editId = null, defaultMain = '', defaultSub = '') {
+    document.getElementById('editCreedId').value = editId || '';
+    if (editId) {
+      const target = appData.creed.find(c => c.id === editId);
+      if (target) {
+        document.getElementById('creedModalTitle').textContent = '条文を編集する';
+        document.getElementById('creedSectionSelect').value = target.section;
+        document.getElementById('creedMainText').value = target.main;
+        document.getElementById('creedSubText').value = target.sub || '';
+      }
+    } else {
+      document.getElementById('creedModalTitle').textContent = '自己哲学に条文を刻む';
+      document.getElementById('creedSectionSelect').value = 'principles';
+      document.getElementById('creedMainText').value = defaultMain;
+      document.getElementById('creedSubText').value = defaultSub;
+    }
+    document.getElementById('creedModal').classList.add('open');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('open');
+  }
+
+  function saveCreedItem() {
+    const editId = document.getElementById('editCreedId').value;
+    const section = document.getElementById('creedSectionSelect').value;
+    const main = document.getElementById('creedMainText').value.trim();
+    const sub = document.getElementById('creedSubText').value.trim();
+
+    if (!main) {
+      showToast('指針・原則を入力してください');
+      return;
+    }
+
+    if (editId) {
+      const idx = appData.creed.findIndex(c => c.id === editId);
+      if (idx !== -1) {
+        appData.creed[idx] = { ...appData.creed[idx], section, main, sub };
+      }
+    } else {
+      appData.creed.push({
+        id: 'c_' + Date.now(),
+        section,
+        main,
+        sub
+      });
+    }
+
+    appData.updatedAt = getJSTNow();
+    persist();
+    renderCreed();
+    closeModal('creedModal');
+    showToast('自己哲学を更新しました');
+  }
+
+  function deleteCreedItem(id) {
+    if (!confirm('この条文を自己哲学から削除しますか？')) return;
+    selectedCreedIds.delete(id);
+    appData.creed = appData.creed.filter(c => c.id !== id);
+    appData.updatedAt = getJSTNow();
+    persist();
+    renderCreed();
+    showToast('条文を削除しました');
+  }
+
+  function snapshotCreed() {
+    if (appData.creed.length === 0) {
+      showToast('保存する条文がありません');
+      return;
+    }
+    const note = prompt('このバージョンのメモ（例：複数の自己哲学を統合してブラッシュアップ）', `Rev.${appData.version} スナップショット`);
+    if (note === null) return;
+
+    appData.creedHistory.unshift({
+      version: appData.version,
+      date: getJSTNow(),
+      note: note || `Rev.${appData.version}`,
+      items: JSON.parse(JSON.stringify(appData.creed))
+    });
+    appData.version += 1;
+    appData.updatedAt = getJSTNow();
+    persist();
+    renderCreed();
+    showToast(`Rev.${appData.version - 1} を履歴に保存しました`);
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+  }
+
+  function renderBrowse() {
+    const container = document.getElementById('browseList');
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+    // カウント表示の更新
+    document.getElementById('count-all').textContent = appData.insights.length;
+    const posEl = document.getElementById('count-positive');
+    if (posEl) posEl.textContent = appData.insights.filter(i => i.tone === 'positive').length;
+    const negEl = document.getElementById('count-negative');
+    if (negEl) negEl.textContent = appData.insights.filter(i => i.tone === 'negative').length;
+    const neuEl = document.getElementById('count-neutral');
+    if (neuEl) neuEl.textContent = appData.insights.filter(i => i.tone === 'neutral').length;
+
+    appData.categories.forEach(cat => {
+      const cntEl = document.getElementById('count-' + cat.id);
+      if (cntEl) {
+        cntEl.textContent = appData.insights.filter(i => i.type === cat.id).length;
+      }
+    });
+
+    const filtered = appData.insights.filter(i => {
+      if (currentFilter.startsWith('tone_')) {
+        const targetTone = currentFilter.replace('tone_', '');
+        if (i.tone !== targetTone) return false;
+      } else if (currentFilter.startsWith('type_')) {
+        const targetType = currentFilter.replace('type_', '');
+        if (i.type !== targetType) return false;
+      }
+
+      if (!keyword) return true;
+      return (i.source + i.content + i.myTake).toLowerCase().includes(keyword);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state">該当するストックが見つかりません。「記録する」タブから追加してみましょう。</div>';
+      return;
+    }
+
+    const toneLabels = {
+      positive: { text: '✅ 肯定的', cls: 'tag-tone-positive' },
+      negative: { text: '⚠️ 否定的', cls: 'tag-tone-negative' },
+      neutral: { text: '⚖️ 中立的', cls: 'tag-tone-neutral' }
+    };
+
+    container.innerHTML = filtered.map(i => {
+      const catObj = appData.categories.find(c => c.id === i.type) || { name: '一般' };
+      const tn = toneLabels[i.tone] || toneLabels.neutral;
+      const isSelected = selectedInsightIds.has(i.id);
+      return `
+        <div class="entry-item ${isSelected ? 'selected' : ''}" onclick="handleCardClick('${i.id}', event)">
+          <input type="checkbox" id="chk_${i.id}" class="entry-select-box" ${isSelected ? 'checked' : ''} onchange="toggleSelectInsight('${i.id}', this, event)">
+          <div class="entry-header">
+            <div class="tag-group">
+              <span class="tag ${tn.cls}">${tn.text}</span>
+              <span class="tag tag-custom">${escapeHTML(catObj.name)}</span>
+              <span style="font-size:0.78rem; color:var(--text-secondary); align-self:center; margin-left:4px;">${escapeHTML(i.source)}</span>
+            </div>
+            <span class="entry-date">${escapeHTML(i.date)}</span>
+          </div>
+          <div class="entry-body">${escapeHTML(i.content)}</div>
+          ${i.myTake ? `
+            <div class="entry-reflection">
+              <span class="entry-reflection-label">自分の解釈・どう活かすか</span>
+              ${escapeHTML(i.myTake)}
+            </div>
+          ` : ''}
+          <div class="entry-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openEditInsightModal('${i.id}')">編集</button>
+            <button class="btn btn-secondary btn-sm" onclick="promoteInsightToCreed('${i.id}')">単独で自己哲学へ ↗</button>
+            <button class="btn btn-danger" onclick="deleteInsight('${i.id}')">削除</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderCreed() {
+    document.getElementById('headerVerBadge').textContent = `Rev. ${appData.version}`;
+    document.getElementById('creedUpdatedAt').textContent = appData.updatedAt || '初期テンプレート';
+
+    ['mission', 'values', 'principles'].forEach(sec => {
+      const ul = document.getElementById('creed-' + sec);
+      const items = appData.creed.filter(c => c.section === sec);
+      if (items.length === 0) {
+        ul.innerHTML = '<li style="font-size:0.8rem; color:var(--text-muted); padding:6px 2px;">まだ条文がありません</li>';
+      } else {
+        ul.innerHTML = items.map(item => {
+          const isChecked = selectedCreedIds.has(item.id);
+          return `
+            <li class="creed-item">
+              <input type="checkbox" class="creed-select-box" ${isChecked ? 'checked' : ''} onchange="toggleSelectCreed('${item.id}', this)" title="合体用に選択">
+              <div class="creed-item-content">
+                <div class="creed-item-main">${escapeHTML(item.main)}</div>
+                ${item.sub ? `<div class="creed-item-sub">${escapeHTML(item.sub)}</div>` : ''}
+              </div>
+              <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+                <button class="btn btn-ghost btn-sm" onclick="openCreedModal('${item.id}')">編集</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="deleteCreedItem('${item.id}')">削除</button>
+              </div>
+            </li>
+          `;
+        }).join('');
+      }
+    });
+
+    const histContainer = document.getElementById('creedHistoryList');
+    if (appData.creedHistory.length === 0) {
+      histContainer.innerHTML = '<div class="empty-state" style="padding:16px;">履歴はまだありません。「履歴保存」からアーカイブできます。</div>';
+    } else {
+      histContainer.innerHTML = appData.creedHistory.map(h => `
+        <div class="entry-item" style="cursor:default;">
+          <div class="entry-header">
+            <span class="tag tag-quote">Rev. ${h.version} — ${escapeHTML(h.note)}</span>
+            <span class="entry-date">${escapeHTML(h.date)}</span>
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-secondary); margin-top:6px;">
+            ${h.items.map(it => `・${escapeHTML(it.main)}`).join('<br>')}
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function renderAll() {
+    populateCategorySelects();
+    setupFilterPills();
+    renderBrowse();
+    renderCreed();
+  }
+
+  function exportData() {
+    const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = getJSTNow().slice(0, 10).replace(/\//g, '');
+    a.href = url;
+    a.download = `logos_philosophy_${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('JSONファイルを保存しました');
+  }
+
+  function importData() {
+    const fileInput = document.getElementById('importFile');
+    const file = fileInput.files[0];
+    if (!file) {
+      showToast('JSONファイルを選択してください');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (!imported.creed || !imported.insights) {
+          throw new Error('Invalid format');
+        }
+        appData = { ...appData, ...imported };
+        if (!appData.categories) {
+          appData.categories = [
+            { id: 'insight', name: '日々の気づき' },
+            { id: 'reality', name: '否定（現実）' },
+            { id: 'quote', name: '他者の哲学' },
+            { id: 'anti', name: '反面教師' }
+          ];
+        }
+        persist();
+        renderAll();
+        showToast('データを復元しました');
+      } catch (err) {
+        alert('ファイルの形式が正しくありません。');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  init();
+</script>
+</body>
+</html>
